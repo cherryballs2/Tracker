@@ -1,29 +1,43 @@
-CC = gcc
-BIN = btTracker
-CFLAGS = -Wall -Wextra -Werror -Ofast  -funroll-loops -fomit-frame-pointer -std=c17 -pipe
-LDFLAGS = -flto -pthread -lm
-CFG = ./src/config.h
-SRC	= ./src/main.c 
-BUILD = ./build
-OBJ = $(BUILD)/obj/main.o
+.SILENT:
 
-GUI = $(shell grep -E '^\s*#define\s+GUI\s+' $(CFG) | awk '{print $$3}')
-$(info GUI = $(GUI))
+CC := gcc
+BIN := btTracker
+CFLAGS := -Wall -Wextra -Werror -Ofast  -funroll-loops -fomit-frame-pointer -std=c17 -pipe
+LDFLAGS := -flto -pthread -lm
+CFG := ./src/config.h
+SRC	:= ./src/main.c 
+BUILD_DIR := ./build
+OBJ_DIR := $(BUILD_DIR)/obj
+BIN_DIR := $(BUILD_DIR)/bin
+OBJ := $(patsubst ./src/%.c,$(OBJ_DIR)/%.o,$(SRC))
 
-ifeq ($(GUI), SDL)
-	SRC += .src/gui-sdl.c
-	OBJ+= $(BUILD)/obj/gui-sdl.o
-	LDFLAGS += -lSDL2
+RED := \033[1;31m
+GREEN := \033[1;32m
+YELLOW := \033[1;33m
+BLUE := \033[1;34m
+RESET := \033[0m
+
+GUI := $(shell grep -E '^\s*#define\s+GUI\s+' $(CFG) | cut -d' ' -f3)
+
+ifeq ($(GUI), GTK)
+	SRC += ./src/gui-gtk.c
+	OBJ+= $(BUILD_DIR)/obj/gui-gtk.o
+	LDFLAGS += -lgtk-4.0
 endif
 
-all: $(OBJ)
-	mkdir -p $(BUILD)
-	mkdir -p $(BUILD)/obj
-	mkdir -p $(BUILD)/bin
-	$(CC) $(OBJ) $(CFLAGS) $(LDFLAGS) -o $(BUILD)/bin/$(BIN)
+all: dirs $(BIN_DIR)/$(BIN)
 
-$(BUILD)/obj/%.o: ./src/%.c
-	mkdir -p $(BUILD)/obj
+dirs:
+	mkdir -p $(OBJ_DIR) $(BIN_DIR)
+	echo -e "$(GREEN)Directories created$(RESET)"
+
+$(BIN_DIR)/$(BIN): $(OBJ)
+	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $@
+	echo -e "$(GREEN)Binary created$(RESET)"
+
+$(OBJ_DIR)/%.o: ./src/%.c
 	$(CC) -c $< -o $@ $(CFLAGS)
+	echo -e "$(BLUE)Compiled $<$(RESET)"
+
 clean:
-	rm -rvf $(BUILD)
+	@rm -rvf $(BUILD_DIR) | sed -e 's/^/\x1b[1;33m/' -e 's/$$/\x1b[0m/'

@@ -1,7 +1,8 @@
 #include "config.h"
-#if gui == SDL
-#include "gui-sdl.h"
+#if GUI == GTK
+#include "gui-gtk.h"
 #endif
+
 int main() {
     init_gui(); 
     while  (1) {

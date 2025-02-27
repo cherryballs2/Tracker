@@ -13,7 +13,19 @@
                 "${workspaceFolder}/src/**",
                 "/usr/include/glib-2.0"
             ]
+            },
+            {
+                "name": "Windows",
+                "intelliSenseMode": "windows-msvc-x64",
+                "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe",
+                "cStandard": "c17",
+                "includePath": [
+                    "${workspaceFolder}/**",
+                    "${workspaceFolder}/src/**"
+                ]
         }
+        
     ],
+    
     "version": 4
 }

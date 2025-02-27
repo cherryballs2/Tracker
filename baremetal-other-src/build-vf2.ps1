@@ -3,10 +3,12 @@
 # and in your path.
 
 $CC = "riscv64-unknown-elf-gcc"
+$AS = "riscv64-unknown-elf-as"
 $LD = "riscv64-unknown-elf-ld"
 $OBJCOPY = "riscv64-unknown-elf-objcopy"
 $CFLAGS = "-march=rv64imac -mabi=ilp32 -ffunction-sections -fdata-sections -Os"
 $LDFLAGS = "-T linker.ld -Wl,--gc-sections"
-$SRC_DIR = "src"
+$SRC_DIR = "vf2"
 $BUILD_DIR = "build"
 
+CC 
